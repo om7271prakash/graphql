@@ -6,6 +6,7 @@ const typeDefs = gql`
         numberOfAnimals: Int,
         price: Float,
         onSale: Boolean,
+        numbers: [Float]
     }
 `;
 
@@ -22,6 +23,9 @@ const resolvers = {
         },
         onSale: () => {
             return true;
+        },
+        numbers: () => {
+            return [12.33, 43.00, 98.87];
         }
     }
 }
