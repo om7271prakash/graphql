@@ -1,6 +1,32 @@
 exports.Query = {
     hello: (parent, args, context) => "World!",
-    products: (parent, args, { products }) => products,
+    products: (parent, {filter}, { products, reviews }) => {
+        let filteredProducts = products;
+        if(filter){
+
+            const { onSale, avgRating } = filter
+
+            if(onSale){
+                filteredProducts = filteredProducts.filter(product => {
+                    return product.onSale;
+                });
+            }
+            if([1,2,3,4,5].includes(avgRating)){
+                filteredProducts = filteredProducts.filter(product => {
+                    let count = 0;
+                    let totalRatings = reviews.reduce((total, review) => {
+                        if(review.productId === product.id){
+                            count++;
+                            return total += Number(review.rating);
+                        }
+                        return total;
+                    }, 0);
+                    return Math.round(totalRatings / count) === avgRating ? true : false;
+                });
+            }
+        }
+        return filteredProducts;
+    },
     product: (parent, { id }, { products }) => {
         return products.find(product => product.id === id) || null;
     },
