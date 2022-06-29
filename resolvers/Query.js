@@ -1,7 +1,7 @@
 exports.Query = {
     hello: (parent, args, context) => "World!",
-    products: (parent, {filter}, { products, reviews }) => {
-        let filteredProducts = products;
+    products: (parent, {filter}, { db }) => {
+        let filteredProducts = db.products;
         if(filter){
 
             const { onSale, avgRating } = filter
@@ -14,7 +14,7 @@ exports.Query = {
             if([1,2,3,4,5].includes(avgRating)){
                 filteredProducts = filteredProducts.filter(product => {
                     let count = 0;
-                    let totalRatings = reviews.reduce((total, review) => {
+                    let totalRatings = db.reviews.reduce((total, review) => {
                         if(review.productId === product.id){
                             count++;
                             return total += Number(review.rating);
@@ -27,17 +27,15 @@ exports.Query = {
         }
         return filteredProducts;
     },
-    product: (parent, { id }, { products }) => {
-        return products.find(product => product.id === id) || null;
+    product: (parent, { id }, { db }) => {
+        return db.products.find(product => product.id === id) || null;
     },
-    categories: (parent, args, { categories }) => categories,
-    category: (parent, { id }, { categories }) => {
-        return categories.find(category => category.id === id) || null;
+    categories: (parent, args, { db }) => db.categories,
+    category: (parent, { id }, { db }) => {
+        return db.categories.find(category => category.id === id) || null;
     },
-    reviews: (parent, args, { reviews }) => reviews,
-    review: (parent, { id }, { reviews }) => {
-        return reviews.find(review => review.id === id);
+    reviews: (parent, args, { db }) => db.reviews,
+    review: (parent, { id }, { db }) => {
+        return reviews.find(review => db.review.id === id);
     },
-
-    
 }
